@@ -4130,6 +4130,12 @@ p.wds-culprit__body {
   min-height: 42px;
 }
 .wdsp-card--featured .wdsp-tagline { color: rgba(255, 255, 255, 0.75); }
+.wdsp-price-row {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+}
 .wdsp-price {
   font-family: 'Montserrat', sans-serif;
   font-size: 40px;
@@ -4144,6 +4150,14 @@ p.wds-culprit__body {
   color: #777;
   margin-left: 2px;
 }
+.wdsp-was {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: #a5a1b5;
+  text-decoration: line-through;
+}
+.wdsp-card--featured .wdsp-was { color: rgba(255, 255, 255, 0.5); }
 .wdsp-bill {
   font-family: 'Montserrat', sans-serif;
   font-size: 13px;
@@ -4212,16 +4226,40 @@ p.wds-culprit__body {
 .wdsp-card--featured .wdsp-divider::after { background: rgba(255, 255, 255, 0.15); }
 .wdsp-card--featured .wdsp-divider span { color: rgba(255, 255, 255, 0.55); }
 
+.wdsp-inherits {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #663dff;
+  margin: -4px 0 18px;
+}
+.wdsp-card--featured .wdsp-inherits { color: #d8c8ff; }
+
 .wdsp-feats {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  flex: 1;
+}
+.wdsp-feat-group-title {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: #8b86a3;
+  margin: 0 0 10px;
+}
+.wdsp-card--featured .wdsp-feat-group-title { color: rgba(255, 255, 255, 0.62); }
+.wdsp-feat-list {
   list-style: none;
   margin: 0;
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  flex: 1;
+  gap: 10px;
 }
-.wdsp-feats li {
+.wdsp-feat-list li {
   display: flex;
   align-items: flex-start;
   gap: 10px;
@@ -4230,16 +4268,28 @@ p.wds-culprit__body {
   line-height: 1.55;
   color: #333;
 }
-.wdsp-feats li i {
+.wdsp-feat-list li i {
   margin-top: 3px;
   font-size: 12px;
   flex-shrink: 0;
+  color: #663dff;
 }
-.wdsp-feats li.yes i { color: #663dff; }
-.wdsp-feats li.no { opacity: 0.45; }
-.wdsp-card--featured .wdsp-feats li { color: rgba(255, 255, 255, 0.9); }
-.wdsp-card--featured .wdsp-feats li.yes i { color: #c084fc; }
-.wdsp-card--featured .wdsp-feats li.no { opacity: 0.4; }
+.wdsp-card--featured .wdsp-feat-list li { color: rgba(255, 255, 255, 0.9); }
+.wdsp-card--featured .wdsp-feat-list li i { color: #c084fc; }
+
+.wdsp-note {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12.5px;
+  font-style: italic;
+  color: #8b86a3;
+  margin: 24px 0 0;
+  padding-top: 16px;
+  border-top: 1px solid #eee;
+}
+.wdsp-card--featured .wdsp-note {
+  color: rgba(255, 255, 255, 0.6);
+  border-top-color: rgba(255, 255, 255, 0.15);
+}
 
 @media (max-width: 1199px) {
   .wdsp-grid { grid-template-columns: 1fr; max-width: 520px; }

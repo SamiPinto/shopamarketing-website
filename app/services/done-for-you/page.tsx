@@ -31,7 +31,7 @@ export default function DoneForYouPage() {
   const faqs = [
     {
       q: 'What exactly is included in a Done For You package?',
-      a: "Everything on the plan card, genuinely everything: website management, SEO, Google and Meta ads including the ad spend, creative design, brand videos, organic social posting, blogs, AI search visibility across ChatGPT and Gemini, plus a custom dashboard where you can watch it all work. One fee, no surprise extras, no 'that'll be additional' emails.",
+      a: "Everything on the plan card. A dedicated account manager and monthly strategy, campaign management across Google and Meta, SEO and AI search visibility across ChatGPT and Gemini, blog articles, unlimited creative design and your website managed month to month. You also get a custom dashboard where you can watch it all work. One management fee, no surprise extras, no 'that'll be additional' emails. Ad spend is the only separate line, and it goes straight to the platforms.",
     },
     {
       q: 'How is this different from hiring an in-house marketer?',
@@ -50,8 +50,8 @@ export default function DoneForYouPage() {
       a: "That's exactly what the strategy call is for! Tell us your goals, your market and your appetite for growth, and we'll recommend the plan that fits, even if it's the cheaper one. You can move between plans as your business grows, and plenty of our clients do.",
     },
     {
-      q: "What does 'guaranteed impressions' mean?",
-      a: "Every plan guarantees a minimum number of times your brand is seen each month across ads and placements, from 100,000 on Starter to 500,000 on Dominate. It's our way of putting a floor under your visibility, so you always know the minimum your investment is delivering.",
+      q: 'How does ad spend work?',
+      a: "Your ad spend is billed separately and goes straight to Google, Meta and the other platforms. We don't mark it up. We don't take a cut. Before you start, we'll recommend a budget based on your industry, your competition and what it genuinely costs to compete in your market. You set the number, you can change it any time, and your dashboard shows exactly where every dollar went.",
     },
   ];
 
