@@ -144,7 +144,7 @@ export default function WebsiteDesignPage() {
     },
     {
       q: 'What platforms do you build websites on?',
-      a: 'WordPress, Shopify and WooCommerce, chosen to fit your business rather than our convenience. All three are proven, flexible and fully yours. No lock-in contracts, and no drama if you ever decide to move on.',
+      a: 'WordPress, Shopify and WooCommerce, chosen to fit your business rather than our convenience. When a template platform would only hold you back, we build custom coded websites from scratch, for example a Next.js and React site for a booking or member portal, a headless build where the design is fully bespoke, or a bespoke web app with dashboards, live data and integrations wired into your existing systems. Whichever route we take, it is proven, flexible and fully yours. No lock-in contracts, and no drama if you ever decide to move on.',
     },
     {
       q: 'Do you provide ongoing website maintenance?',
