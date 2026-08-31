@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import TemplateScripts from "@/components/TemplateScripts";
-import { getPostBySlug, getPosts, getCategories, getTags, featuredImage, stripHtml, formatDate, rewriteBlogLinks } from "@/lib/wordpress";
+import { getPostBySlug, getPosts, getCategories, getTags, featuredImage, stripHtml, formatDate, rewriteBlogLinks, getSeoMeta } from "@/lib/wordpress";
 
 export const revalidate = 3600;
 
@@ -16,9 +16,10 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   const title = stripHtml(post.title.rendered);
   const description = stripHtml(post.excerpt.rendered).slice(0, 160);
   const image = featuredImage(post);
+  const seo = await getSeoMeta(post.link);
   return {
-    title: `${title} | Shopa Marketing`,
-    description,
+    title: seo.title ?? `${title} | Shopa Marketing`,
+    description: seo.description ?? description,
     openGraph: {
       title,
       description,

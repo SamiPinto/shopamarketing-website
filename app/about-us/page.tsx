@@ -2,6 +2,13 @@ import TemplateScripts from "@/components/TemplateScripts";
 import ServiceTestimonials from "@/components/ServiceTestimonials";
 import ScrollScrubVideo from "@/components/ScrollScrubVideo";
 import HoverRevealVideo from "@/components/HoverRevealVideo";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: 'About Shopa Marketing | Built for Australian SMEs',
+  description:
+    'Meet the team behind 1,500+ Australian and New Zealand SMEs. One dedicated account manager, transparent pricing and 45+ years of combined experience.',
+};
 
 export default function AboutUsPage() {
   const clientLogos: { src: string; alt: string; light?: boolean }[] = [

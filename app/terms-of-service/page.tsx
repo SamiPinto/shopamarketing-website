@@ -1,4 +1,11 @@
 import TemplateScripts from "@/components/TemplateScripts";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: 'Terms of Service | Shopa Marketing',
+  description:
+    'The terms that apply when you use the Shopa Marketing website and engage our marketing services.',
+};
 
 export default function TermsOfServicePage() {
   const sections = [
