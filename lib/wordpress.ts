@@ -120,6 +120,57 @@ export async function getPostBySlug(slug: string): Promise<WPPost | null> {
   return posts[0] ?? null;
 }
 
+// The WordPress blog links to main-site pages using its own subdomain
+// (blog.shopamarketing.com.au/seo-services/), where those pages do not exist and
+// return 404. Post bodies are rendered verbatim on shopamarketing.com.au/blog/*,
+// so the 404s surface here too. Rewrite them to the live main-site URLs.
+const BLOG_ORIGIN = 'https://blog.shopamarketing.com.au';
+
+const BLOG_PATH_MAP: Record<string, string> = {
+  '/': '/',
+  '/services/': '/services',
+  '/seo-services/': '/services/seo-services',
+  '/social-media/': '/services/social-media',
+  '/google-ads/': '/services/google-ads',
+  '/website/': '/services/website',
+  '/graphic-design/': '/services/graphic-design',
+  '/ooh-advertising/': '/services/ooh-advertising',
+  '/done-for-you/': '/services/done-for-you',
+  '/contact-us/': '/contact-us',
+  '/about-us/': '/about-us',
+  '/privacy-policy/': '/privacy-policy',
+  '/terms-of-service/': '/terms-of-service',
+  // Retired OOH landing pages, folded into the OOH service page.
+  '/shopping-centre-ads/': '/services/ooh-advertising',
+  '/grocery-store-ads/': '/services/ooh-advertising',
+  '/print-and-digital-screens/': '/services/ooh-advertising',
+  '/cmo-for-hire/': '/services/done-for-you',
+  '/email-campaigns/': '/services/done-for-you',
+};
+
+export function rewriteBlogLinks(html: string): string {
+  return html.replace(
+    new RegExp(`href="${BLOG_ORIGIN}([^"]*)"`, 'g'),
+    (match, rest: string) => {
+      // Media stays on the WordPress origin.
+      if (rest.startsWith('/wp-content/')) return match;
+
+      // The origin may be followed by nothing, or by ?query / #hash with no path.
+      const [pathAndQuery = '', hash = ''] = rest.split('#');
+      const [rawPath = '', query = ''] = pathAndQuery.split('?');
+      const suffix = `${query ? `?${query}` : ''}${hash ? `#${hash}` : ''}`;
+
+      const withSlash = rawPath.endsWith('/') ? rawPath : `${rawPath}/`;
+      const mapped = BLOG_PATH_MAP[withSlash];
+      if (mapped) return `href="${mapped}${suffix}"`;
+
+      // Anything else is a post permalink; it lives under /blog on this site.
+      const slug = withSlash.replace(/^\/|\/$/g, '');
+      return slug ? `href="/blog/${slug}${suffix}"` : `href="/blog${suffix}"`;
+    }
+  );
+}
+
 export function authorAvatar(post: WPPost): string {
   const author = post._embedded?.author?.[0];
   return (
