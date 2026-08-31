@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import TemplateScripts from "@/components/TemplateScripts";
-import { getPostBySlug, getPosts, getCategories, getTags, featuredImage, stripHtml, formatDate } from "@/lib/wordpress";
+import { getPostBySlug, getPosts, getCategories, getTags, featuredImage, stripHtml, formatDate, rewriteBlogLinks } from "@/lib/wordpress";
 
 export const revalidate = 3600;
 
@@ -104,7 +104,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
                 {/* WordPress post content */}
                 <div
                   className="chy-para-1 blog-details-body"
-                  dangerouslySetInnerHTML={{ __html: post.content.rendered }}
+                  dangerouslySetInnerHTML={{ __html: rewriteBlogLinks(post.content.rendered) }}
                 />
 
                 {/* tags + share */}
