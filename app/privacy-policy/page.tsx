@@ -1,4 +1,11 @@
 import TemplateScripts from "@/components/TemplateScripts";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: 'Privacy Policy | Shopa Marketing',
+  description:
+    'How Shopa Marketing collects, uses, stores and protects your personal information, and the choices you have about your data.',
+};
 
 export default function PrivacyPolicyPage() {
   const sections = [

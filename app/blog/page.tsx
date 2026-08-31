@@ -2,6 +2,13 @@ import TemplateScripts from "@/components/TemplateScripts";
 import BlogSearch from "@/components/blog/BlogSearch";
 import BlogHeroCounters from "@/components/BlogHeroCounters";
 import { getPostsPaged, getCategories } from "@/lib/wordpress";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: 'Marketing Blog for Australian SMEs | Shopa Marketing',
+  description:
+    'Practical marketing advice for Australian and New Zealand small businesses — SEO, paid ads, social media, websites and OOH, without the jargon.',
+};
 
 export const revalidate = 3600;
 

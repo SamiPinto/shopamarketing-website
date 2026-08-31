@@ -1,8 +1,10 @@
-const WP_BASE = 'https://blog.shopamarketing.com.au/wp-json/wp/v2';
+const WP_ORIGIN = 'https://blog.shopamarketing.com.au';
+const WP_BASE = `${WP_ORIGIN}/wp-json/wp/v2`;
 
 export interface WPPost {
   id: number;
   slug: string;
+  link: string;
   date: string;
   title: { rendered: string };
   excerpt: { rendered: string };
@@ -147,6 +149,47 @@ const BLOG_PATH_MAP: Record<string, string> = {
   '/cmo-for-hire/': '/services/done-for-you',
   '/email-campaigns/': '/services/done-for-you',
 };
+
+// Rank Math holds hand-written SEO titles and descriptions for each post - shorter
+// and sharper than the editorial headline, which usually runs past the ~60 characters
+// Google shows. They aren't in the core REST payload, so read them from Rank Math's
+// head endpoint and fall back to the WordPress values if it's unavailable.
+export interface SeoMeta {
+  title?: string;
+  description?: string;
+}
+
+function decodeEntities(s: string): string {
+  return s
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#0?39;/g, "'")
+    .replace(/&#8217;/g, '\u2019')
+    .replace(/&nbsp;/g, ' ');
+}
+
+export async function getSeoMeta(permalink: string): Promise<SeoMeta> {
+  try {
+    const res = await fetch(
+      `${WP_ORIGIN}/wp-json/rankmath/v1/getHead?url=${encodeURIComponent(permalink)}`,
+      { next: { revalidate: 3600 } }
+    );
+    if (!res.ok) return {};
+    const data: { head?: string } = await res.json();
+    const head = data.head;
+    if (!head) return {};
+    const title = head.match(/<title>([\s\S]*?)<\/title>/)?.[1];
+    const description = head.match(/<meta name="description" content="([\s\S]*?)"/)?.[1];
+    return {
+      title: title ? decodeEntities(title).trim() : undefined,
+      description: description ? decodeEntities(description).trim() : undefined,
+    };
+  } catch {
+    return {};
+  }
+}
 
 export function rewriteBlogLinks(html: string): string {
   return html.replace(

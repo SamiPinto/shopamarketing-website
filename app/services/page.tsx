@@ -3,6 +3,13 @@ import ServiceHero from "@/components/ServiceHero";
 import ServiceTestimonials from "@/components/ServiceTestimonials";
 import ServicesDeck from "@/components/ServicesDeck";
 import { homeServices } from "@/components/homeServicesData";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: 'Marketing Services Australia | Every Channel, One Team',
+  description:
+    'SEO, Google Ads, social media, websites, graphic design and OOH advertising for Australian SMEs — planned and run by one team from a single strategy.',
+};
 
 export default function ServicesPage() {
 
