@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { sendMail, smtpConfigured, list, verifySmtp } from '@/lib/email';
+import { sendMail, smtpConfigured, verifySmtp } from '@/lib/email';
 
 // Temporary diagnostic: GET /api/contact?diag=shopa-smtp
 // Reports which delivery env vars are set + whether SMTP auth succeeds
@@ -81,9 +81,12 @@ export async function POST(request: Request) {
   if (smtpConfigured()) {
     try {
       await sendMail({
-        to: list(process.env.CONTACT_TO, 'pkennedy@shopamarketing.com.au'),
-        cc: list(process.env.CONTACT_CC, 'neil@shopamarketing.com'),
-        bcc: list(process.env.CONTACT_BCC, 'sami@shopamarketing.com'),
+        // TEMPORARY: all enquiries go to Vicky only. Restore the env-driven
+        // to/cc/bcc block below (and the `list` import) to revert.
+        //   to:  list(process.env.CONTACT_TO,  'pkennedy@shopamarketing.com.au'),
+        //   cc:  list(process.env.CONTACT_CC,  'neil@shopamarketing.com'),
+        //   bcc: list(process.env.CONTACT_BCC, 'sami@shopamarketing.com'),
+        to: ['vicky@shopamarketing.com'],
         replyTo: payload.email, // replies go straight to the customer
         subject: `New enquiry: ${payload.fullName}${payload.businessName ? ` (${payload.businessName})` : ''}`,
         text: [
