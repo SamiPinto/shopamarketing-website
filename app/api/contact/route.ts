@@ -77,8 +77,11 @@ export async function POST(request: Request) {
   let emailErr = '';
   let sheetErr = '';
 
-  // 1) Email notification via Microsoft 365 SMTP (from contact@shopamarketing.com.au)
-  if (smtpConfigured()) {
+  // Email and the Sheet webhook are independent — run them together rather
+  // than back-to-back. The Office 365 SMTP handshake alone costs ~4s, so the
+  // webhook used to be pure added latency on top of it.
+  const sendEmail = async () => {
+    if (!smtpConfigured()) return;
     try {
       await sendMail({
         // TEMPORARY: all enquiries go to Vicky only. Restore the env-driven
@@ -91,19 +94,19 @@ export async function POST(request: Request) {
         subject: `New enquiry: ${payload.fullName}${payload.businessName ? ` (${payload.businessName})` : ''}`,
         text: [
           `Name: ${payload.fullName}`,
-          `Business: ${payload.businessName || '—'}`,
+          `Business: ${payload.businessName || '\u2014'}`,
           `Phone: ${payload.phone}`,
           `Email: ${payload.email}`,
-          `Website: ${payload.website || '—'}`,
+          `Website: ${payload.website || '\u2014'}`,
           `Services: ${payload.services.join(', ')}`,
-          `Main Goal: ${payload.goal || '—'}`,
-          `Timeline: ${payload.timeline || '—'}`,
-          `Budget: ${payload.budget || '—'}`,
+          `Main Goal: ${payload.goal || '\u2014'}`,
+          `Timeline: ${payload.timeline || '\u2014'}`,
+          `Budget: ${payload.budget || '\u2014'}`,
           `Marketing SMS Consent: ${payload.consent1 ? 'Yes' : 'No'}`,
           `Non-marketing SMS Consent: ${payload.consent2 ? 'Yes' : 'No'}`,
           '',
           'Message:',
-          payload.message || '—',
+          payload.message || '\u2014',
         ].join('\n'),
       });
       emailOk = true;
@@ -111,10 +114,10 @@ export async function POST(request: Request) {
       emailErr = err instanceof Error ? err.message : String(err);
       console.error('[contact] email failed:', err);
     }
-  }
+  };
 
-  // 2) Save to Google Sheet via the Apps Script webhook
-  if (webhookUrl) {
+  const sendSheet = async () => {
+    if (!webhookUrl) return;
     try {
       const res = await fetch(webhookUrl, {
         method: 'POST',
@@ -127,7 +130,9 @@ export async function POST(request: Request) {
       sheetErr = err instanceof Error ? err.message : String(err);
       console.error('[contact] sheet webhook failed:', err);
     }
-  }
+  };
+
+  await Promise.all([sendEmail(), sendSheet()]);
 
   const status = diag ? {
     email: emailOk ? 'ok' : smtpConfigured() ? `failed: ${emailErr}` : 'not-set',

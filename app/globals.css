@@ -392,6 +392,19 @@ html {
   transition: color 0.25s ease;
 }
 .contact-form-shopa .cfw-back:hover { color: #663dff; }
+.contact-form-shopa .chy-pr-btn-1:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  filter: grayscale(0.5);
+  box-shadow: none;
+}
+.contact-form-shopa .cfw-hint {
+  margin: 10px 0 0;
+  text-align: right;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: #6f6a85;
+}
 .contact-form-shopa .cfw-error {
   display: block;
   font-size: 12.5px;

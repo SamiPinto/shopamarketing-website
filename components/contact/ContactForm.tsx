@@ -27,6 +27,10 @@ function validatePhone(iso: string, value: string): string {
   return `Please enter a valid ${c?.name ?? ''} phone number`.replace('  ', ' ');
 }
 
+function isEmailValid(value: string): boolean {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(value.trim());
+}
+
 function validateWebsite(value: string): string {
   if (!value.trim()) return '';
   if (/^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(\/.*)?$/.test(value.trim())) return '';
@@ -34,6 +38,10 @@ function validateWebsite(value: string): string {
 }
 
 interface Errors { fullName?: string; phone?: string; email?: string; website?: string; }
+
+declare global {
+  interface Window { dataLayer?: Record<string, unknown>[] }
+}
 
 export default function ContactForm() {
   const [step, setStep] = useState(0);
@@ -85,10 +93,23 @@ export default function ContactForm() {
     if (!fullName.trim()) e.fullName = 'Full name is required';
     if (!phone.trim())    e.phone    = 'Phone number is required';
     else { const err = validatePhone(phoneCountry, phone); if (err) e.phone = err; }
-    if (!email.trim())    e.email    = 'Email is required';
+    if (!email.trim())        e.email = 'Email is required';
+    else if (!isEmailValid(email)) e.email = 'Please enter a valid email address';
     if (website.trim())   { const err = validateWebsite(website); if (err) e.website = err; }
     return e;
   }
+
+  const phoneValid   = phone.trim() !== '' && validatePhone(phoneCountry, phone) === '';
+  const emailValid   = isEmailValid(email);
+  const websiteValid = validateWebsite(website) === '';
+  const canSubmit =
+    services.length > 0 && fullName.trim() !== '' && phoneValid && emailValid && websiteValid;
+
+  const missing: string[] = [];
+  if (!fullName.trim()) missing.push('your name');
+  if (!phoneValid)      missing.push('a valid phone number');
+  if (!emailValid)      missing.push('a valid email');
+  if (!websiteValid)    missing.push('a valid website');
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -114,8 +135,10 @@ export default function ContactForm() {
         }),
       });
       const data = await res.json().catch(() => null);
-      if (res.ok && data?.ok) setSubmitted(true);
-      else setSendError(true);
+      if (res.ok && data?.ok) {
+        setSubmitted(true);
+        window.dataLayer?.push({ event: 'contact_form_submit', form_name: 'contact_wizard' });
+      } else setSendError(true);
     } catch {
       setSendError(true);
     } finally {
@@ -358,11 +381,19 @@ export default function ContactForm() {
               <button type="button" className="cfw-back" onClick={() => setStep(3)} disabled={sending}>
                 <i className="fa-solid fa-left-long"></i> Back
               </button>
-              <button type="submit" aria-label="send message" className="chy-pr-btn-1" disabled={sending} style={sending ? { opacity: 0.7, pointerEvents: 'none' } : {}}>
+              <button
+                type="submit"
+                aria-label="send message"
+                className="chy-pr-btn-1"
+                disabled={sending || !canSubmit}
+              >
                 <span className="text">{sending ? 'Sending…' : 'Send a Message'}</span>
                 <span className="icon"><i className="fa-solid fa-right-long"></i></span>
               </button>
             </div>
+            {!sending && missing.length > 0 && (
+              <p className="cfw-hint">Add {missing.join(', ')} to send.</p>
+            )}
           </div>
         )}
 
