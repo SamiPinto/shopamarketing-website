@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import JsonLd from "@/components/JsonLd";
+import { serviceSchema, breadcrumbSchema, webPageSchema } from "@/lib/schema";
 import TemplateScripts from "@/components/TemplateScripts";
 import ServiceHero from "@/components/ServiceHero";
 import { seoPageTestimonials as testimonials } from "@/components/testimonialsData";
@@ -105,21 +107,35 @@ export default function SeoServicesPage() {
     })),
   };
 
-  const reviewSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'Service',
+  const serviceNode = serviceSchema({
+    path: '/services/seo-services',
     name: 'SEO Services',
     serviceType: 'Search Engine Optimisation Services',
-    provider: { '@type': 'Organization', name: 'Shopa Marketing' },
-    areaServed: ['Australia', 'New Zealand'],
-  };
+    description:
+      'SEO for Australian SMEs that moves rankings and revenue. Technical fixes, local SEO, content and links, built to get you found by ready-to-buy customers.',
+  });
 
   return (
     <>
       <TemplateScripts />
 
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(reviewSchema) }} />
+      <JsonLd
+        graph={[
+          serviceNode,
+          faqSchema,
+          breadcrumbSchema([
+            { name: 'Home', path: '/' },
+            { name: 'Services', path: '/services' },
+            { name: 'SEO Services', path: '/services/seo-services' },
+          ]),
+          webPageSchema({
+            path: '/services/seo-services',
+            name: 'SEO Services Australia | Get Found, Rank, Grow | Shopa',
+            description:
+              'SEO for Australian SMEs that moves rankings and revenue. Technical fixes, local SEO, content and links, built to get you found by ready-to-buy customers.',
+          }),
+        ]}
+      />
 
       {/* preloader */}
       <div id="preloader">

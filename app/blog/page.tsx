@@ -3,6 +3,8 @@ import BlogSearch from "@/components/blog/BlogSearch";
 import BlogHeroCounters from "@/components/BlogHeroCounters";
 import { getPostsPaged, getCategories } from "@/lib/wordpress";
 import type { Metadata } from "next";
+import JsonLd from "@/components/JsonLd";
+import { SITE_URL, ORG_ID, breadcrumbSchema, webPageSchema } from "@/lib/schema";
 
 export const metadata: Metadata = {
   title: 'Marketing Blog for Australian SMEs | Shopa Marketing',
@@ -30,6 +32,31 @@ export default async function BlogPage({
   return (
     <>
       <TemplateScripts />
+
+      <JsonLd
+        graph={[
+          {
+            '@type': 'Blog',
+            '@id': `${SITE_URL}/blog#blog`,
+            url: `${SITE_URL}/blog`,
+            name: 'Shopa Marketing Blog',
+            description:
+              'Practical marketing advice for Australian and New Zealand small businesses: SEO, paid ads, social media, websites and OOH, without the jargon.',
+            publisher: { '@id': ORG_ID },
+            inLanguage: 'en-AU',
+          },
+          webPageSchema({
+            path: '/blog',
+            name: 'Marketing Blog for Australian SMEs | Shopa Marketing',
+            type: 'CollectionPage',
+          }),
+          breadcrumbSchema([
+            { name: 'Home', path: '/' },
+            { name: 'Blog', path: '/blog' },
+          ]),
+        ]}
+      />
+
       <BlogHeroCounters businesses={1500} campaigns={5000} />
 
       {/* preloader */}

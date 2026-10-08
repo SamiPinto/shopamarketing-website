@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import JsonLd from "@/components/JsonLd";
+import { serviceSchema, breadcrumbSchema, webPageSchema } from "@/lib/schema";
 import TemplateScripts from "@/components/TemplateScripts";
 import ServiceHero from "@/components/ServiceHero";
 import ScrollScrubVideo from "@/components/ScrollScrubVideo";
@@ -70,21 +72,35 @@ export default function GraphicDesignPage() {
     })),
   };
 
-  const reviewSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'Service',
+  const serviceNode = serviceSchema({
+    path: '/services/graphic-design',
     name: 'Graphic Design',
     serviceType: 'Graphic Design Services',
-    provider: { '@type': 'Organization', name: 'Shopa Marketing' },
-    areaServed: ['Australia', 'New Zealand'],
-  };
+    description:
+      'Graphic design for Australian SMEs. Logos, branding, social creative and print that does a job: more clicks, more leads, more sales.',
+  });
 
   return (
     <>
       <TemplateScripts />
 
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(reviewSchema) }} />
+      <JsonLd
+        graph={[
+          serviceNode,
+          faqSchema,
+          breadcrumbSchema([
+            { name: 'Home', path: '/' },
+            { name: 'Services', path: '/services' },
+            { name: 'Graphic Design', path: '/services/graphic-design' },
+          ]),
+          webPageSchema({
+            path: '/services/graphic-design',
+            name: 'Graphic Design Australia | Branding & Creative | Shopa',
+            description:
+              'Graphic design for Australian SMEs. Logos, branding, social creative and print that does a job: more clicks, more leads, more sales.',
+          }),
+        ]}
+      />
 
       {/* preloader */}
       <div id="preloader">

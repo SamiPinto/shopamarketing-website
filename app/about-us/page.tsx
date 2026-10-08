@@ -3,6 +3,8 @@ import ServiceTestimonials from "@/components/ServiceTestimonials";
 import ScrollScrubVideo from "@/components/ScrollScrubVideo";
 import HoverRevealVideo from "@/components/HoverRevealVideo";
 import type { Metadata } from "next";
+import JsonLd from "@/components/JsonLd";
+import { breadcrumbSchema, webPageSchema } from "@/lib/schema";
 
 export const metadata: Metadata = {
   title: 'About Shopa Marketing | Built for Australian SMEs',
@@ -47,6 +49,22 @@ export default function AboutUsPage() {
   return (
     <>
       <TemplateScripts />
+
+      <JsonLd
+        graph={[
+          webPageSchema({
+            path: '/about-us',
+            name: 'About Shopa Marketing | Built for Australian SMEs',
+            description:
+              'Meet the team behind 1,500+ Australian and New Zealand SMEs. One dedicated account manager, transparent pricing and 45+ years of combined experience.',
+            type: 'AboutPage',
+          }),
+          breadcrumbSchema([
+            { name: 'Home', path: '/' },
+            { name: 'About Us', path: '/about-us' },
+          ]),
+        ]}
+      />
 
       {/* preloader */}
       <div id="preloader">

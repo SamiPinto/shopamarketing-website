@@ -2,6 +2,8 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import TemplateScripts from "@/components/TemplateScripts";
 import { getPostBySlug, getPosts, getCategories, getTags, featuredImage, stripHtml, formatDate, rewriteBlogLinks, getSeoMeta } from "@/lib/wordpress";
+import JsonLd from "@/components/JsonLd";
+import { blogPostingSchema, breadcrumbSchema, webPageSchema } from "@/lib/schema";
 
 export const revalidate = 3600;
 
@@ -50,9 +52,31 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
   const heroImg = featuredImage(post);
   const postCategories = post._embedded?.['wp:term']?.[0] ?? [];
 
+  const postPath = `/blog/${post.slug}`;
+  const postTitle = stripHtml(post.title.rendered);
+  const blogSchema = [
+    blogPostingSchema({
+      path: postPath,
+      headline: postTitle,
+      description: stripHtml(post.excerpt.rendered).slice(0, 160),
+      image: heroImg,
+      datePublished: post.date,
+      dateModified: post.modified ?? post.date,
+      authorName: author,
+      section: postCategories[0]?.name,
+    }),
+    webPageSchema({ path: postPath, name: postTitle }),
+    breadcrumbSchema([
+      { name: 'Home', path: '/' },
+      { name: 'Blog', path: '/blog' },
+      { name: postTitle, path: postPath },
+    ]),
+  ];
+
   return (
     <>
       <TemplateScripts />
+      <JsonLd graph={blogSchema} />
 
       {/* preloader */}
       <div id="preloader">

@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import JsonLd from "@/components/JsonLd";
+import { serviceSchema, breadcrumbSchema, webPageSchema } from "@/lib/schema";
 import TemplateScripts from "@/components/TemplateScripts";
 import ServiceHero from "@/components/ServiceHero";
 import { websitePageTestimonials as testimonials } from "@/components/testimonialsData";
@@ -166,21 +168,35 @@ export default function WebsiteDesignPage() {
     })),
   };
 
-  const reviewSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'Service',
+  const serviceNode = serviceSchema({
+    path: '/services/website',
     name: 'Website Design',
     serviceType: 'Web Design Services',
-    provider: { '@type': 'Organization', name: 'Shopa Marketing' },
-    areaServed: ['Australia', 'New Zealand'],
-  };
+    description:
+      'Website design for Australian SMEs. Fast, mobile-first sites built to convert, engineered for speed, SEO and turning visitors into paying customers.',
+  });
 
   return (
     <>
       <TemplateScripts />
 
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(reviewSchema) }} />
+      <JsonLd
+        graph={[
+          serviceNode,
+          faqSchema,
+          breadcrumbSchema([
+            { name: 'Home', path: '/' },
+            { name: 'Services', path: '/services' },
+            { name: 'Website Design', path: '/services/website' },
+          ]),
+          webPageSchema({
+            path: '/services/website',
+            name: 'Website Design Australia | Fast Sites That Sell | Shopa',
+            description:
+              'Website design for Australian SMEs. Fast, mobile-first sites built to convert, engineered for speed, SEO and turning visitors into paying customers.',
+          }),
+        ]}
+      />
 
       {/* preloader */}
       <div id="preloader">

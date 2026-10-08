@@ -5,6 +5,8 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import DeferredStyles from "@/components/DeferredStyles";
 import ScrollToTop from "@/components/ScrollToTop";
+import JsonLd from "@/components/JsonLd";
+import { organizationSchema, websiteSchema } from "@/lib/schema";
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -68,6 +70,10 @@ export default function RootLayout({
         <link rel="stylesheet" href="/assets/css/main.css" />
         {/* all.min.css (Font Awesome), flaticon_choicy, swiper, odometer,
             magnific-popup and Google Fonts load non-blocking via DeferredStyles */}
+
+        {/* Sitewide structured data: Organization (ProfessionalService) + WebSite.
+            Rendered on every page; other pages reference these nodes by @id. */}
+        <JsonLd graph={[organizationSchema, websiteSchema]} />
       </head>
       <body className="font-sans antialiased bg-white text-gray-900">
         {/* Google Tag Manager (noscript) — must be the first thing in <body> */}

@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import JsonLd from "@/components/JsonLd";
+import { serviceSchema, breadcrumbSchema, webPageSchema } from "@/lib/schema";
 import TemplateScripts from "@/components/TemplateScripts";
 import ServiceHero from "@/components/ServiceHero";
 import { googleAdsPageTestimonials as testimonials } from "@/components/testimonialsData";
@@ -69,21 +71,35 @@ export default function GoogleAdsPage() {
     })),
   };
 
-  const reviewSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'Service',
+  const serviceNode = serviceSchema({
+    path: '/services/google-ads',
     name: 'Google Ads Management',
     serviceType: 'Google Ads Management Services',
-    provider: { '@type': 'Organization', name: 'Shopa Marketing' },
-    areaServed: ['Australia', 'New Zealand'],
-  };
+    description:
+      'Google Ads for Australian SMEs. Search, Shopping and Performance Max campaigns tuned to real conversions, with every dollar tracked to revenue.',
+  });
 
   return (
     <>
       <TemplateScripts />
 
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(reviewSchema) }} />
+      <JsonLd
+        graph={[
+          serviceNode,
+          faqSchema,
+          breadcrumbSchema([
+            { name: 'Home', path: '/' },
+            { name: 'Services', path: '/services' },
+            { name: 'Google Ads', path: '/services/google-ads' },
+          ]),
+          webPageSchema({
+            path: '/services/google-ads',
+            name: 'Google Ads Management Australia | Clicks to Customers | Shopa',
+            description:
+              'Google Ads for Australian SMEs. Search, Shopping and Performance Max campaigns tuned to real conversions, with every dollar tracked to revenue.',
+          }),
+        ]}
+      />
 
       {/* preloader */}
       <div id="preloader">

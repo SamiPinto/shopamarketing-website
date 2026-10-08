@@ -8,6 +8,8 @@ import ServiceTestimonials from '@/components/ServiceTestimonials';
 import { homeServices } from '@/components/homeServicesData';
 import { homeExtraTestimonials } from '@/components/testimonialsData';
 import { getGoogleRating } from '@/lib/googleReviews';
+import JsonLd from '@/components/JsonLd';
+import { ORG_ID, webPageSchema } from '@/lib/schema';
 
 export const revalidate = 3600;
 
@@ -21,13 +23,26 @@ export default async function HomePage() {
     { icon: 'flaticon-trophy', title: 'Built for SMEs', subtitle: 'Marketing that grows with your business.', body: '45+ years of combined experience, 5,000+ campaigns delivered, 1,500+ businesses. That track record shows up in every campaign we run for you.' },
   ];
 
-  const reviewSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'Organization',
-    name: 'Shopa Marketing',
-    url: 'https://shopamarketing.com.au',
-    aggregateRating: { '@type': 'AggregateRating', ratingValue: String(googleRating.rating), reviewCount: String(googleRating.count) },
-  };
+  // Home page nodes: attach the live Google rating to the sitewide Organization
+  // (by @id) and describe the page itself. The full Organization + WebSite nodes
+  // come from the root layout.
+  const homeSchema = [
+    {
+      '@type': 'ProfessionalService',
+      '@id': ORG_ID,
+      aggregateRating: {
+        '@type': 'AggregateRating',
+        ratingValue: String(googleRating.rating),
+        reviewCount: String(googleRating.count),
+      },
+    },
+    webPageSchema({
+      path: '/',
+      name: 'Shopa Marketing | Your Go-To Marketing Company for SMEs',
+      description:
+        'Award-winning digital marketing agency helping Australian and New Zealand SMEs grow through SEO, social media, Google Ads and more.',
+    }),
+  ];
 
   const clientLogos: { src: string; alt: string; light?: boolean }[] = [
     { src: '/assets/img/client/mcdonalds.webp',   alt: "McDonald's" },
@@ -65,7 +80,7 @@ export default async function HomePage() {
 
       <TemplateScripts />
 
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(reviewSchema) }} />
+      <JsonLd graph={homeSchema} />
 
       {/* preloader */}
       <div id="preloader">

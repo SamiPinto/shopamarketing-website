@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import JsonLd from "@/components/JsonLd";
+import { serviceSchema, breadcrumbSchema, webPageSchema } from "@/lib/schema";
 import TemplateScripts from "@/components/TemplateScripts";
 import ServiceHero from "@/components/ServiceHero";
 import { socialMediaPageTestimonials as testimonials } from "@/components/testimonialsData";
@@ -70,21 +72,35 @@ export default function SocialMediaPage() {
     })),
   };
 
-  const reviewSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'Service',
+  const serviceNode = serviceSchema({
+    path: '/services/social-media',
     name: 'Social Media Advertising',
     serviceType: 'Social Media Advertising Services',
-    provider: { '@type': 'Organization', name: 'Shopa Marketing' },
-    areaServed: ['Australia', 'New Zealand'],
-  };
+    description:
+      'Social media ads for Australian SMEs. Facebook, Instagram, TikTok and LinkedIn campaigns built on real data and tied to real revenue.',
+  });
 
   return (
     <>
       <TemplateScripts />
 
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(reviewSchema) }} />
+      <JsonLd
+        graph={[
+          serviceNode,
+          faqSchema,
+          breadcrumbSchema([
+            { name: 'Home', path: '/' },
+            { name: 'Services', path: '/services' },
+            { name: 'Social Media', path: '/services/social-media' },
+          ]),
+          webPageSchema({
+            path: '/services/social-media',
+            name: 'Social Media Advertising Australia | Ads That Convert | Shopa',
+            description:
+              'Social media ads for Australian SMEs. Facebook, Instagram, TikTok and LinkedIn campaigns built on real data and tied to real revenue.',
+          }),
+        ]}
+      />
 
       {/* preloader */}
       <div id="preloader">

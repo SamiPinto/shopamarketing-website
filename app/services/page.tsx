@@ -4,6 +4,8 @@ import ServiceTestimonials from "@/components/ServiceTestimonials";
 import ServicesDeck from "@/components/ServicesDeck";
 import { homeServices } from "@/components/homeServicesData";
 import type { Metadata } from "next";
+import JsonLd from "@/components/JsonLd";
+import { breadcrumbSchema, webPageSchema } from "@/lib/schema";
 
 export const metadata: Metadata = {
   title: 'Marketing Services Australia | Every Channel, One Team',
@@ -50,6 +52,22 @@ export default function ServicesPage() {
   return (
     <>
       <TemplateScripts />
+
+      <JsonLd
+        graph={[
+          webPageSchema({
+            path: '/services',
+            name: 'Marketing Services Australia | Every Channel, One Team',
+            description:
+              'SEO, Google Ads, social media, websites, graphic design and OOH advertising for Australian SMEs, planned and run by one team from a single strategy.',
+            type: 'CollectionPage',
+          }),
+          breadcrumbSchema([
+            { name: 'Home', path: '/' },
+            { name: 'Services', path: '/services' },
+          ]),
+        ]}
+      />
 
       {/* preloader */}
       <div id="preloader">

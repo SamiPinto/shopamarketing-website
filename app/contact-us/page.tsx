@@ -2,6 +2,8 @@ import TemplateScripts from "@/components/TemplateScripts";
 import ContactForm from "@/components/contact/ContactForm";
 import StarAnimationTrigger from "@/components/StarAnimationTrigger";
 import { getGoogleRating } from "@/lib/googleReviews";
+import JsonLd from "@/components/JsonLd";
+import { breadcrumbSchema, webPageSchema } from "@/lib/schema";
 
 export const metadata = {
   title: "Contact Us — Shopa Marketing",
@@ -13,6 +15,23 @@ export default async function ContactUsPage() {
   return (
     <>
       <TemplateScripts />
+
+      <JsonLd
+        graph={[
+          webPageSchema({
+            path: '/contact-us',
+            name: 'Contact Us | Shopa Marketing',
+            description:
+              'Book a strategy session with Shopa Marketing. Speak directly with a senior marketing specialist, no junior accounts, no sales pitch.',
+            type: 'ContactPage',
+          }),
+          breadcrumbSchema([
+            { name: 'Home', path: '/' },
+            { name: 'Contact Us', path: '/contact-us' },
+          ]),
+        ]}
+      />
+
       <StarAnimationTrigger />
 
       {/* preloader */}

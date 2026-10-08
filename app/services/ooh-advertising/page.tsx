@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import JsonLd from "@/components/JsonLd";
+import { serviceSchema, breadcrumbSchema, webPageSchema } from "@/lib/schema";
 import TemplateScripts from "@/components/TemplateScripts";
 import ServiceHero from "@/components/ServiceHero";
 import { oohPageTestimonials } from "@/components/testimonialsData";
@@ -104,21 +106,35 @@ export default function OohAdvertisingPage() {
     })),
   };
 
-  const reviewSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'Service',
+  const serviceNode = serviceSchema({
+    path: '/services/ooh-advertising',
     name: 'OOH Advertising',
     serviceType: 'Out-of-Home Advertising Services',
-    provider: { '@type': 'Organization', name: 'Shopa Marketing' },
-    areaServed: ['Australia', 'New Zealand'],
-  };
+    description:
+      'Out-of-home ads for Australian SMEs. Billboards, shopping-centre and grocery-store screens and digital displays, big-brand visibility on a small-business budget.',
+  });
 
   return (
     <>
       <TemplateScripts />
 
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(reviewSchema) }} />
+      <JsonLd
+        graph={[
+          serviceNode,
+          faqSchema,
+          breadcrumbSchema([
+            { name: 'Home', path: '/' },
+            { name: 'Services', path: '/services' },
+            { name: 'OOH Advertising', path: '/services/ooh-advertising' },
+          ]),
+          webPageSchema({
+            path: '/services/ooh-advertising',
+            name: 'OOH Advertising Australia | Screens, Billboards & More | Shopa',
+            description:
+              'Out-of-home ads for Australian SMEs. Billboards, shopping-centre and grocery-store screens and digital displays, big-brand visibility on a small-business budget.',
+          }),
+        ]}
+      />
 
       {/* preloader */}
       <div id="preloader">

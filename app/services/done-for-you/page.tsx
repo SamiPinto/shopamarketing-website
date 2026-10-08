@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import JsonLd from "@/components/JsonLd";
+import { serviceSchema, breadcrumbSchema, webPageSchema } from "@/lib/schema";
 import TemplateScripts from "@/components/TemplateScripts";
 import PricingSection from "@/components/PricingSection";
 import ServiceHero from "@/components/ServiceHero";
@@ -65,21 +67,35 @@ export default function DoneForYouPage() {
     })),
   };
 
-  const reviewSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'Service',
+  const serviceNode = serviceSchema({
+    path: '/services/done-for-you',
     name: 'Done For You Marketing Packages',
     serviceType: 'Full-Service Marketing Management',
-    provider: { '@type': 'Organization', name: 'Shopa Marketing' },
-    areaServed: ['Australia', 'New Zealand'],
-  };
+    description:
+      'Full-service marketing for Australian SMEs. Strategy, ads, SEO, content and design handled by one senior team, so you run your business, not your marketing.',
+  });
 
   return (
     <>
       <TemplateScripts />
 
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(reviewSchema) }} />
+      <JsonLd
+        graph={[
+          serviceNode,
+          faqSchema,
+          breadcrumbSchema([
+            { name: 'Home', path: '/' },
+            { name: 'Services', path: '/services' },
+            { name: 'Done For You', path: '/services/done-for-you' },
+          ]),
+          webPageSchema({
+            path: '/services/done-for-you',
+            name: 'Done-For-You Marketing Australia | Your Whole Team | Shopa',
+            description:
+              'Full-service marketing for Australian SMEs. Strategy, ads, SEO, content and design handled by one senior team, so you run your business, not your marketing.',
+          }),
+        ]}
+      />
 
       {/* preloader */}
       <div id="preloader">
