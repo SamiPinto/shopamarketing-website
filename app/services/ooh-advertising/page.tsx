@@ -111,11 +111,6 @@ export default function OohAdvertisingPage() {
     serviceType: 'Out-of-Home Advertising Services',
     provider: { '@type': 'Organization', name: 'Shopa Marketing' },
     areaServed: ['Australia', 'New Zealand'],
-    review: oohTestimonials.map((t) => ({
-      '@type': 'Review',
-      reviewBody: t.quote,
-      author: { '@type': 'Organization', name: t.name },
-    })),
   };
 
   return (

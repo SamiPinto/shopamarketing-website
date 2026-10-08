@@ -112,11 +112,6 @@ export default function SeoServicesPage() {
     serviceType: 'Search Engine Optimisation Services',
     provider: { '@type': 'Organization', name: 'Shopa Marketing' },
     areaServed: ['Australia', 'New Zealand'],
-    review: testimonials.map((t) => ({
-      '@type': 'Review',
-      reviewBody: t.quote,
-      author: { '@type': 'Organization', name: t.name },
-    })),
   };
 
   return (

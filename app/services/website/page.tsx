@@ -173,11 +173,6 @@ export default function WebsiteDesignPage() {
     serviceType: 'Web Design Services',
     provider: { '@type': 'Organization', name: 'Shopa Marketing' },
     areaServed: ['Australia', 'New Zealand'],
-    review: testimonials.map((t) => ({
-      '@type': 'Review',
-      reviewBody: t.quote,
-      author: { '@type': 'Organization', name: t.name },
-    })),
   };
 
   return (

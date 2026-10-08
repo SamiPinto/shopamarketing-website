@@ -6,7 +6,7 @@ import StarAnimationTrigger from '@/components/StarAnimationTrigger';
 import FloatingCardsGSAP from '@/components/FloatingCardsGSAP';
 import ServiceTestimonials from '@/components/ServiceTestimonials';
 import { homeServices } from '@/components/homeServicesData';
-import { testimonials, homeExtraTestimonials } from '@/components/testimonialsData';
+import { homeExtraTestimonials } from '@/components/testimonialsData';
 import { getGoogleRating } from '@/lib/googleReviews';
 
 export const revalidate = 3600;
@@ -27,11 +27,6 @@ export default async function HomePage() {
     name: 'Shopa Marketing',
     url: 'https://shopamarketing.com.au',
     aggregateRating: { '@type': 'AggregateRating', ratingValue: String(googleRating.rating), reviewCount: String(googleRating.count) },
-    review: testimonials.map((t) => ({
-      '@type': 'Review',
-      reviewBody: t.quote,
-      author: { '@type': 'Organization', name: t.name },
-    })),
   };
 
   const clientLogos: { src: string; alt: string; light?: boolean }[] = [
