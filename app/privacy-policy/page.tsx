@@ -82,9 +82,13 @@ export default function PrivacyPolicyPage() {
     },
     {
       id: 'cookies',
-      title: 'Cookies and Website Analytics',
+      title: 'Cookies, Analytics and Advertising',
       body: (
-        <p>Our website uses cookies and analytics tools, including Google Analytics, to help us understand how visitors use the site. This may involve the collection of information such as your IP address, browser type and device information. You can manage or disable cookies through your browser settings.</p>
+        <>
+          <p>Our website uses cookies and analytics tools, including Google Analytics, to help us understand how visitors use the site. This may involve the collection of information such as your IP address, browser type and device information. You can manage or disable cookies through your browser settings.</p>
+          <p>We also use the Meta Pixel, a tool provided by Meta Platforms, Inc. (the operator of Facebook and Instagram). The Meta Pixel uses cookies and similar technologies to collect information about your visit, such as the pages you view, actions you take on our site, your IP address, browser and device information. Meta may link this information to your Facebook or Instagram account if you have one. We use it to measure the effectiveness of our advertising, to show relevant ads to people who have visited our website, and to reach people with similar interests. Meta handles this information in accordance with its own <a href="https://www.facebook.com/privacy/policy/" target="_blank" rel="noopener noreferrer">Privacy Policy</a>.</p>
+          <p>You can control how Meta uses this information to show you ads through your <a href="https://www.facebook.com/adpreferences/" target="_blank" rel="noopener noreferrer">Facebook Ad Preferences</a>, opt out of interest-based advertising from participating companies at <a href="https://youronlinechoices.com.au/" target="_blank" rel="noopener noreferrer">youronlinechoices.com.au</a>, or block cookies in your browser settings.</p>
+        </>
       ),
     },
     {
