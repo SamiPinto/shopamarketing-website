@@ -2,6 +2,7 @@
 
 import { useState, FormEvent } from 'react';
 import { TOP_COUNTRIES, REST_COUNTRIES, ALL_COUNTRIES, flagEmoji, validateNationalNumber } from './countries';
+import { trackLead, trackFormStep } from '@/lib/tracking';
 
 const SERVICE_OPTIONS = [
   { label: 'Done For You', icon: 'flaticon-team' },
@@ -74,8 +75,9 @@ export default function ContactForm() {
   }
 
   // Single-tap steps advance on their own after a beat, so the choice is seen landing
-  function pickAndAdvance(setter: (v: string) => void, value: string) {
+  function pickAndAdvance(setter: (v: string) => void, value: string, stepNum: number, stepName: string) {
     setter(value);
+    trackFormStep(stepNum, stepName, value);
     setTimeout(() => setStep(s => s + 1), 280);
   }
 
@@ -85,6 +87,7 @@ export default function ContactForm() {
       return;
     }
     setStepError('');
+    trackFormStep(1, 'services', services);
     setStep(1);
   }
 
@@ -119,6 +122,7 @@ export default function ContactForm() {
 
     setSending(true);
     setSendError(false);
+    const dialCode = ALL_COUNTRIES.find((c) => c.iso === phoneCountry)?.dial ?? '';
     try {
       const res = await fetch('/api/contact', {
         method: 'POST',
@@ -126,7 +130,7 @@ export default function ContactForm() {
         body: JSON.stringify({
           services, goal, timeline, budget,
           fullName, businessName,
-          phone: `${ALL_COUNTRIES.find((c) => c.iso === phoneCountry)?.dial ?? ''} ${phone}`.trim(),
+          phone: `${dialCode} ${phone}`.trim(),
           phoneCountry,
           email, website, message,
           consent1, consent2,
@@ -138,6 +142,14 @@ export default function ContactForm() {
       if (res.ok && data?.ok) {
         setSubmitted(true);
         window.dataLayer?.push({ event: 'contact_form_submit', form_name: 'contact_wizard' });
+        // /api/contact also returns ok for honeypot and time-trap drops, so re-check here
+        if (!honeypot && Date.now() - renderedAt >= 3000) {
+          const e164 = `${dialCode}${phone.replace(/\D/g, '').replace(/^0+/, '')}`;
+          trackLead(
+            { email: email.trim(), phone: e164, fullName, countryCode: phoneCountry },
+            { services, goal, timeline, budget }
+          );
+        }
       } else setSendError(true);
     } catch {
       setSendError(true);
@@ -216,7 +228,7 @@ export default function ContactForm() {
               {GOAL_OPTIONS.map(opt => (
                 <button key={opt} type="button"
                   className={`cfw-chip${goal === opt ? ' is-selected' : ''}`}
-                  onClick={() => pickAndAdvance(setGoal, opt)}>
+                  onClick={() => pickAndAdvance(setGoal, opt, 2, 'goal')}>
                   {opt}
                 </button>
               ))}
@@ -237,7 +249,7 @@ export default function ContactForm() {
               {TIMELINE_OPTIONS.map(opt => (
                 <button key={opt} type="button"
                   className={`cfw-chip${timeline === opt ? ' is-selected' : ''}`}
-                  onClick={() => pickAndAdvance(setTimeline, opt)}>
+                  onClick={() => pickAndAdvance(setTimeline, opt, 3, 'timeline')}>
                   {opt}
                 </button>
               ))}
@@ -258,7 +270,7 @@ export default function ContactForm() {
               {BUDGET_OPTIONS.map(opt => (
                 <button key={opt} type="button"
                   className={`cfw-chip${budget === opt ? ' is-selected' : ''}`}
-                  onClick={() => pickAndAdvance(setBudget, opt)}>
+                  onClick={() => pickAndAdvance(setBudget, opt, 4, 'budget')}>
                   {opt}
                 </button>
               ))}

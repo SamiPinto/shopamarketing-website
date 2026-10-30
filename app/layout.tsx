@@ -5,6 +5,7 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import DeferredStyles from "@/components/DeferredStyles";
 import ScrollToTop from "@/components/ScrollToTop";
+import ContactClickTracker from "@/components/ContactClickTracker";
 import JsonLd from "@/components/JsonLd";
 import { organizationSchema, websiteSchema } from "@/lib/schema";
 
@@ -123,6 +124,7 @@ fbq('track', 'PageView');`}
         <main>{children}</main>
         <Footer />
         <ScrollToTop />
+        <ContactClickTracker />
       </body>
     </html>
   );
