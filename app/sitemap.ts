@@ -24,9 +24,8 @@ const STATIC_ROUTES: { path: string; priority: number; changeFrequency: Metadata
   { path: "/contact-us", priority: 0.6, changeFrequency: "yearly" },
   { path: "/privacy-policy", priority: 0.3, changeFrequency: "yearly" },
   { path: "/terms-of-service", priority: 0.3, changeFrequency: "yearly" },
-  // Landing pages. Their thank-you pages are noindex and deliberately left out.
+  // Ad landing pages. /seo-offer and all thank-you pages are noindex and deliberately left out.
   { path: "/website-design-offer", priority: 0.7, changeFrequency: "monthly" },
-  { path: "/seo-offer", priority: 0.7, changeFrequency: "monthly" },
   { path: "/ooh-offer", priority: 0.7, changeFrequency: "monthly" },
 ];
 

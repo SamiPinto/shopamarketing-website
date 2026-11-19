@@ -8,7 +8,7 @@ const description =
 export const metadata: Metadata = {
   title,
   description,
-  robots: { index: true, follow: true },
+  robots: { index: false, follow: false },
   alternates: { canonical: "/seo-offer" },
   openGraph: {
     title,

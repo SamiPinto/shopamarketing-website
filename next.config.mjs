@@ -27,8 +27,8 @@ const nextConfig = {
   },
   async headers() {
     return [
-      // Landing-page thank-you pages: conversion URLs, never indexed.
-      ...['/thank-you-website', '/ty-7k3q9x2m4p8v', '/thank-you-ooh'].map((source) => ({
+      // SEO ad landing page and all landing thank-you pages: never indexed.
+      ...['/seo-offer', '/thank-you-website', '/ty-7k3q9x2m4p8v', '/thank-you-ooh'].map((source) => ({
         source,
         headers: [{ key: 'X-Robots-Tag', value: 'noindex, nofollow' }],
       })),
