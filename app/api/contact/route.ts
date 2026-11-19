@@ -1,27 +1,5 @@
 import { NextResponse } from 'next/server';
-import { sendMail, smtpConfigured, list, verifySmtp } from '@/lib/email';
-
-// Temporary diagnostic: GET /api/contact?diag=shopa-smtp
-// Reports which delivery env vars are set + whether SMTP auth succeeds
-// (no secret values are returned). Remove once delivery is confirmed working.
-export async function GET(request: Request) {
-  const url = new URL(request.url);
-  if (url.searchParams.get('diag') !== 'shopa-smtp') {
-    return NextResponse.json({ ok: false }, { status: 404 });
-  }
-  const smtp = await verifySmtp();
-  return NextResponse.json({
-    env: {
-      SMTP_USER: Boolean(process.env.SMTP_USER),
-      SMTP_PASS: Boolean(process.env.SMTP_PASS),
-      SMTP_HOST: process.env.SMTP_HOST || '(default) smtp.office365.com',
-      SMTP_PORT: process.env.SMTP_PORT || '(default) 587',
-      CONTACT_WEBHOOK_URL: Boolean(process.env.CONTACT_WEBHOOK_URL),
-      UNSUBSCRIBE_WEBHOOK_URL: Boolean(process.env.UNSUBSCRIBE_WEBHOOK_URL),
-    },
-    smtpVerify: smtp,
-  });
-}
+import { sendMail, smtpConfigured, list } from '@/lib/email';
 
 interface ContactPayload {
   services: string[];
@@ -77,9 +55,7 @@ export async function POST(request: Request) {
   let emailErr = '';
   let sheetErr = '';
 
-  // Email and the Sheet webhook are independent — run them together rather
-  // than back-to-back. The Office 365 SMTP handshake alone costs ~4s, so the
-  // webhook used to be pure added latency on top of it.
+  // Email and the Sheet webhook are independent, so run them together.
   const sendEmail = async () => {
     if (!smtpConfigured()) return;
     try {
@@ -138,6 +114,6 @@ export async function POST(request: Request) {
 
   if (emailOk || sheetOk) return NextResponse.json({ ok: true, status });
 
-  console.error('[contact] not delivered — SMTP and CONTACT_WEBHOOK_URL both unset/failed');
+  console.error('[contact] not delivered — SMTP2GO and CONTACT_WEBHOOK_URL both unset/failed');
   return NextResponse.json({ ok: false, reason: 'not-configured', status }, { status: 503 });
 }

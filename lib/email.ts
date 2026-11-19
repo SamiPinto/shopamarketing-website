@@ -1,37 +1,9 @@
-import nodemailer from 'nodemailer';
-
-// Microsoft 365 SMTP sender. All secrets come from env — never hard-coded.
-// Requires "Authenticated SMTP" enabled on the mailbox and an app password.
-const host = process.env.SMTP_HOST || 'smtp.office365.com';
-const port = Number(process.env.SMTP_PORT || 587);
-const user = process.env.SMTP_USER;   // e.g. registration-web@shopamarketing.com
-const pass = process.env.SMTP_PASS;   // app password — set in Vercel only
-// Always send from the authenticated mailbox — sending "as" any other address
-// requires Exchange Send-As permission and otherwise fails (SendAsDenied).
-const from = user;
+// SMTP2GO HTTP API sender, used by /api/contact and /api/unsubscribe. Needs SMTP2GO_API_KEY
+// in Vercel. The sender must be on a domain verified in SMTP2GO (shopamarketing.com.au).
+const FROM = process.env.EMAIL_FROM || 'Shopa Marketing <website@shopamarketing.com.au>';
 
 export function smtpConfigured(): boolean {
-  return Boolean(user && pass);
-}
-
-function transport() {
-  return nodemailer.createTransport({
-    host,
-    port,
-    secure: false, // 587 uses STARTTLS
-    auth: { user: user!, pass: pass! },
-  });
-}
-
-// Connects + authenticates to the SMTP server without sending — for diagnostics.
-export async function verifySmtp(): Promise<{ ok: boolean; error?: string }> {
-  if (!smtpConfigured()) return { ok: false, error: 'SMTP_USER/SMTP_PASS not set' };
-  try {
-    await transport().verify();
-    return { ok: true };
-  } catch (err) {
-    return { ok: false, error: err instanceof Error ? err.message : String(err) };
-  }
+  return Boolean(process.env.SMTP2GO_API_KEY);
 }
 
 // Comma/space separated env list -> array (drops blanks)
@@ -60,9 +32,7 @@ export async function sendMail(opts: {
   subject: string;
   text: string;
 }) {
-  // Ensure no address receives more than one copy: dedupe within `to`, then drop
-  // any cc/bcc address that's already a recipient. Guards against duplicate or
-  // overlapping entries in the UNSUB_TO/UNSUB_CC (etc.) env vars.
+  // No address gets more than one copy: dedupe `to`, then drop cc/bcc already receiving it.
   const lc = (arr: string[]) => new Set(arr.map((a) => a.toLowerCase()));
   const to = uniq(opts.to);
   const toKeys = lc(to);
@@ -70,13 +40,22 @@ export async function sendMail(opts: {
   const usedKeys = lc([...to, ...cc]);
   const bcc = uniq(opts.bcc ?? []).filter((a) => !usedKeys.has(a.toLowerCase()));
 
-  await transport().sendMail({
-    from,
-    to: to.join(','),
-    cc: cc.length ? cc.join(',') : undefined,
-    bcc: bcc.length ? bcc.join(',') : undefined,
-    replyTo: opts.replyTo,
-    subject: opts.subject,
-    text: opts.text,
+  const r = await fetch('https://api.smtp2go.com/v3/email/send', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'X-Smtp2go-Api-Key': process.env.SMTP2GO_API_KEY! },
+    body: JSON.stringify({
+      sender: FROM,
+      to,
+      ...(cc.length && { cc }),
+      ...(bcc.length && { bcc }),
+      subject: opts.subject.replace(/[\r\n]/g, ' '),
+      text_body: opts.text,
+      ...(opts.replyTo && { custom_headers: [{ header: 'Reply-To', value: opts.replyTo.replace(/[\r\n]/g, '') }] }),
+    }),
   });
+  const data = (await r.json().catch(() => ({}))).data || {};
+  // SMTP2GO returns 200 even when a recipient fails, so check the counts too.
+  if (!r.ok || data.error || data.failed || !data.succeeded) {
+    throw new Error(`SMTP2GO ${r.status} ${data.error_code || ''} ${data.error || JSON.stringify(data.failures || '')}`.trim());
+  }
 }

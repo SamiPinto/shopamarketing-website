@@ -40,7 +40,7 @@ export async function POST(request: Request) {
   let emailOk = false;
   let sheetOk = false;
 
-  // 1) Email notification via Microsoft 365 SMTP
+  // 1) Email notification via SMTP2GO
   if (smtpConfigured()) {
     try {
       await sendMail({
@@ -75,6 +75,6 @@ export async function POST(request: Request) {
 
   if (emailOk || sheetOk) return NextResponse.json({ ok: true });
 
-  console.error('[unsubscribe] not delivered — SMTP and UNSUBSCRIBE_WEBHOOK_URL both unset/failed');
+  console.error('[unsubscribe] not delivered — SMTP2GO and UNSUBSCRIBE_WEBHOOK_URL both unset/failed');
   return NextResponse.json({ ok: false, reason: 'not-configured' }, { status: 503 });
 }
