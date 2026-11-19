@@ -27,6 +27,11 @@ const nextConfig = {
   },
   async headers() {
     return [
+      // Landing-page thank-you pages: conversion URLs, never indexed.
+      ...['/thank-you-website', '/ty-7k3q9x2m4p8v', '/thank-you-ooh'].map((source) => ({
+        source,
+        headers: [{ key: 'X-Robots-Tag', value: 'noindex, nofollow' }],
+      })),
       {
         // Long-lived cache for versioned static assets (CSS, JS, images, fonts)
         source: '/assets/:path*',

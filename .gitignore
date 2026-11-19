@@ -41,3 +41,6 @@ app/globals 2.css
 app/globals 3.css
 public/assets 2/
 raw-assets/
+
+# isolated Tailwind 4 toolchain for the OOH landing page
+/tools/ooh-css/node_modules

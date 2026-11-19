@@ -1,0 +1,9 @@
+{
+  "name": "ooh-css",
+  "private": true,
+  "description": "Isolated Tailwind 4 toolchain for the OOH landing page (main site runs Tailwind 3). Output is committed to public/lp/ooh/ooh.css.",
+  "devDependencies": {
+    "@tailwindcss/cli": "4.3.3",
+    "tailwindcss": "4.3.3"
+  }
+}
