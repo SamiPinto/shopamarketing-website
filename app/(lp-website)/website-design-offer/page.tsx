@@ -5,7 +5,7 @@ export const metadata: Metadata = {
   title: "Custom Websites for Australian Businesses | Shopa Marketing",
   description:
     "Custom websites built around how your customers decide. Fixed price in writing & a lifetime warranty on technical issues. Book a call.",
-  robots: { index: true, follow: true },
+  robots: { index: false, follow: false },
   alternates: { canonical: "/website-design-offer" },
   openGraph: {
     title: "Custom websites for Australian businesses | Shopa Marketing",
