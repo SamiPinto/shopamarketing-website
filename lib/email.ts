@@ -31,6 +31,7 @@ export async function sendMail(opts: {
   replyTo?: string;
   subject: string;
   text: string;
+  html?: string;
 }) {
   // No address gets more than one copy: dedupe `to`, then drop cc/bcc already receiving it.
   const lc = (arr: string[]) => new Set(arr.map((a) => a.toLowerCase()));
@@ -50,6 +51,7 @@ export async function sendMail(opts: {
       ...(bcc.length && { bcc }),
       subject: opts.subject.replace(/[\r\n]/g, ' '),
       text_body: opts.text,
+      ...(opts.html && { html_body: opts.html }),
       ...(opts.replyTo && { custom_headers: [{ header: 'Reply-To', value: opts.replyTo.replace(/[\r\n]/g, '') }] }),
     }),
   });

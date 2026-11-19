@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { sendMail, smtpConfigured, list } from '@/lib/email';
+import { unsubAckEmail, unsubAckText, unsubTeamEmail } from '@/lib/siteEmails';
 
 interface UnsubPayload {
   email: string;
@@ -40,23 +41,30 @@ export async function POST(request: Request) {
   let emailOk = false;
   let sheetOk = false;
 
-  // 1) Email notification via SMTP2GO
+  // 1) Email the team (HTML) and acknowledge the requester, in parallel
   if (smtpConfigured()) {
-    try {
-      await sendMail({
+    const email = payload.email.trim();
+    const permanent = payload.duration === 'Permanently';
+    const rows: [string, string][] = [['Email', email], ['Duration', payload.duration], ['Reason', payload.reason]];
+    const [team, ack] = await Promise.allSettled([
+      sendMail({
         to: list(process.env.UNSUB_TO, 'helpdesk@shopamarketing.com,customerservice@shopamarketing.com'),
         cc: list(process.env.UNSUB_CC, 'sami@shopamarketing.com'),
-        subject: `Unsubscribe request: ${payload.email}`,
-        text: [
-          `Email: ${payload.email}`,
-          `Duration: ${payload.duration}`,
-          `Reason: ${payload.reason}`,
-        ].join('\n'),
-      });
-      emailOk = true;
-    } catch (err) {
-      console.error('[unsubscribe] email failed:', err);
-    }
+        replyTo: email,
+        subject: `Unsubscribe request: ${email}`,
+        text: rows.map(([l, v]) => `${l}: ${v}`).join('\n'),
+        html: unsubTeamEmail(rows, email),
+      }),
+      sendMail({
+        to: [email],
+        subject: "You've been unsubscribed from Shopa Marketing",
+        text: unsubAckText(permanent),
+        html: unsubAckEmail(permanent),
+      }),
+    ]);
+    emailOk = team.status === 'fulfilled';
+    if (team.status === 'rejected') console.error('[unsubscribe] email failed:', team.reason);
+    if (ack.status === 'rejected') console.error('[unsubscribe] ack email failed:', ack.reason);
   }
 
   // 2) Save to Google Sheet via the Apps Script webhook

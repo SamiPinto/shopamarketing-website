@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { sendMail, smtpConfigured, list } from '@/lib/email';
+import { contactAckEmail, contactAckText, contactTeamEmail } from '@/lib/siteEmails';
 
 interface ContactPayload {
   services: string[];
@@ -56,36 +57,54 @@ export async function POST(request: Request) {
   let sheetErr = '';
 
   // Email and the Sheet webhook are independent, so run them together.
+  const rows: [string, string][] = [
+    ['Phone', payload.phone],
+    ['Email', payload.email],
+    ['Website', payload.website],
+    ['Services', payload.services.join(', ')],
+    ['Main goal', payload.goal],
+    ['Timeline', payload.timeline],
+    ['Budget', payload.budget],
+    ['Message', payload.message],
+    ['Marketing SMS consent', payload.consent1 ? 'Yes' : 'No'],
+    ['Non-marketing SMS consent', payload.consent2 ? 'Yes' : 'No'],
+  ];
+  const name = payload.fullName.trim();
+  const business = (payload.businessName || '').trim();
+  const first = name.split(/\s+/)[0].slice(0, 40);
+  const teamTo = list(process.env.CONTACT_TO, 'pkennedy@shopamarketing.com.au');
+
   const sendEmail = async () => {
     if (!smtpConfigured()) return;
     try {
       await sendMail({
-        to: list(process.env.CONTACT_TO, 'pkennedy@shopamarketing.com.au'),
+        to: teamTo,
         cc: list(process.env.CONTACT_CC, 'neil@shopamarketing.com'),
         bcc: list(process.env.CONTACT_BCC, 'sami@shopamarketing.com'),
         replyTo: payload.email, // replies go straight to the customer
-        subject: `New enquiry: ${payload.fullName}${payload.businessName ? ` (${payload.businessName})` : ''}`,
-        text: [
-          `Name: ${payload.fullName}`,
-          `Business: ${payload.businessName || '\u2014'}`,
-          `Phone: ${payload.phone}`,
-          `Email: ${payload.email}`,
-          `Website: ${payload.website || '\u2014'}`,
-          `Services: ${payload.services.join(', ')}`,
-          `Main Goal: ${payload.goal || '\u2014'}`,
-          `Timeline: ${payload.timeline || '\u2014'}`,
-          `Budget: ${payload.budget || '\u2014'}`,
-          `Marketing SMS Consent: ${payload.consent1 ? 'Yes' : 'No'}`,
-          `Non-marketing SMS Consent: ${payload.consent2 ? 'Yes' : 'No'}`,
-          '',
-          'Message:',
-          payload.message || '\u2014',
-        ].join('\n'),
+        subject: `New enquiry: ${name}${business ? ` (${business})` : ''}`,
+        text: [`Name: ${name}`, `Business: ${business || '\u2014'}`, ...rows.map(([l, v]) => `${l}: ${v || '\u2014'}`)].join('\n'),
+        html: contactTeamEmail(rows, { name, business, phone: payload.phone, email: payload.email }),
       });
       emailOk = true;
     } catch (err) {
       emailErr = err instanceof Error ? err.message : String(err);
       console.error('[contact] email failed:', err);
+    }
+  };
+
+  const sendAck = async () => {
+    if (!smtpConfigured()) return;
+    try {
+      await sendMail({
+        to: [payload.email.trim()],
+        replyTo: teamTo.join(', '),
+        subject: "Thanks for getting in touch with Shopa Marketing",
+        text: contactAckText(first),
+        html: contactAckEmail(first),
+      });
+    } catch (err) {
+      console.error('[contact] ack email failed:', err);
     }
   };
 
@@ -105,7 +124,7 @@ export async function POST(request: Request) {
     }
   };
 
-  await Promise.all([sendEmail(), sendSheet()]);
+  await Promise.all([sendEmail(), sendAck(), sendSheet()]);
 
   const status = diag ? {
     email: emailOk ? 'ok' : smtpConfigured() ? `failed: ${emailErr}` : 'not-set',
