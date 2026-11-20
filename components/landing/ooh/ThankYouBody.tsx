@@ -28,7 +28,7 @@ export function ThankYouBody() {
 
   const steps = [
     { t: "Now", d: `We’re checking grocery-store and medical-centre screens ${postcode ? `around ${postcode}` : "in your area"}.` },
-    { t: "Next", d: "A local strategist calls you with the locations that have space." },
+    { t: "Next", d: "A local strategist will call you with the locations that have space." },
     { t: "Then", d: "You review the options and decide what fits. No obligation." },
   ];
 
