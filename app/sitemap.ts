@@ -9,6 +9,7 @@ export const revalidate = 3600;
 // Indexable static routes only. Intentionally excluded:
 //   /case-studies  — 307-redirects to home until rebuilt (see next.config.mjs)
 //   /unsubscribe   — transactional utility page, no search value
+//   ad thank-you pages — noindex (see next.config.mjs)
 const STATIC_ROUTES: { path: string; priority: number; changeFrequency: MetadataRoute.Sitemap[number]["changeFrequency"] }[] = [
   { path: "", priority: 1.0, changeFrequency: "weekly" },
   { path: "/about-us", priority: 0.8, changeFrequency: "monthly" },
@@ -20,6 +21,9 @@ const STATIC_ROUTES: { path: string; priority: number; changeFrequency: Metadata
   { path: "/services/graphic-design", priority: 0.8, changeFrequency: "monthly" },
   { path: "/services/ooh-advertising", priority: 0.8, changeFrequency: "monthly" },
   { path: "/services/done-for-you", priority: 0.8, changeFrequency: "monthly" },
+  { path: "/website-design-offer", priority: 0.7, changeFrequency: "monthly" },
+  { path: "/seo-offer", priority: 0.7, changeFrequency: "monthly" },
+  { path: "/ooh-offer", priority: 0.7, changeFrequency: "monthly" },
   { path: "/blog", priority: 0.7, changeFrequency: "daily" },
   { path: "/contact-us", priority: 0.6, changeFrequency: "yearly" },
   { path: "/privacy-policy", priority: 0.3, changeFrequency: "yearly" },

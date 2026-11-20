@@ -21,7 +21,6 @@ const description =
 export const metadata: Metadata = {
   title,
   description,
-  robots: { index: false, follow: false },
   alternates: { canonical: "/ooh-offer" },
   openGraph: { title, description, url: "/ooh-offer", siteName: "Shopa Marketing", locale: "en_AU", type: "website" },
 };
