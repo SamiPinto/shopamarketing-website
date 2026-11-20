@@ -7,9 +7,9 @@ const TICKS = [
   "Include 1 month boost on Facebook and Instagram",
 ];
 
-export function Check() {
+export function Check({ className = "" }: { className?: string }) {
   return (
-    <span className="bg-grad grid size-5 shrink-0 place-items-center rounded-full" aria-hidden>
+    <span className={`bg-grad grid size-5 shrink-0 place-items-center rounded-full ${className}`} aria-hidden>
       <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
         <path d="M5 12.5l4.5 4.5L19 7.5" />
       </svg>
@@ -79,7 +79,7 @@ export function Hero() {
           >
             <span className="text-[clamp(1.5rem,1vw+1.2rem,2rem)] font-bold tracking-[-0.02em]">
               For{" "}
-              <span className="grad-text-light text-[clamp(3rem,3vw+2rem,4.4rem)] leading-none font-extrabold tracking-[-0.05em]">
+              <span className="grad-text-light pr-[0.08em] text-[clamp(3rem,3vw+2rem,4.4rem)] leading-none font-extrabold tracking-[-0.05em]">
                 $60
               </span>{" "}
               per week
@@ -89,8 +89,8 @@ export function Hero() {
 
           <ul className="fade-up mt-8 grid gap-3 sm:grid-cols-2" style={{ "--d": "580ms" } as React.CSSProperties}>
             {TICKS.map((t) => (
-              <li key={t} className="flex items-center gap-3 text-[16px] font-semibold text-white">
-                <Check />
+              <li key={t} className="flex items-start gap-3 text-[16px] font-semibold text-white">
+                <Check className="mt-0.5" />
                 {t}
               </li>
             ))}
