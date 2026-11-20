@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import "@fontsource-variable/montserrat/wght.css";
 import "@fontsource-variable/urbanist/wght.css";
 import "@/components/landing/seo/styles.css";
-import { SEO_GTM, TrackingHead, TrackingNoscript } from "@/components/landing/Tracking";
+import { TrackingHead, TrackingNoscript } from "@/components/landing/Tracking";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://shopamarketing.com.au"),
@@ -18,8 +18,8 @@ export default function SeoLandingLayout({ children }: { children: React.ReactNo
         <link rel="preload" as="image" href="/lp/seo/logo-white.webp" type="image/webp" />
       </head>
       <body>
-        <TrackingNoscript gtmId={SEO_GTM} />
-        <TrackingHead gtmId={SEO_GTM} />
+        <TrackingNoscript />
+        <TrackingHead />
         <div id="root">{children}</div>
       </body>
     </html>

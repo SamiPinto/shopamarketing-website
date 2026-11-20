@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Urbanist } from "next/font/google";
 import localFont from "next/font/local";
-import { MAIN_GTM, TrackingHead, TrackingNoscript } from "@/components/landing/Tracking";
+import { TrackingHead, TrackingNoscript } from "@/components/landing/Tracking";
 
 const urbanist = Urbanist({ variable: "--font-urbanist", subsets: ["latin"] });
 const geistMono = localFont({ src: "../fonts/GeistMonoVF.woff", variable: "--font-geist-mono", weight: "100 900" });
@@ -23,8 +23,8 @@ export default function OohLandingLayout({ children }: { children: React.ReactNo
         <link rel="stylesheet" href="/lp/ooh/ooh.css" />
       </head>
       <body>
-        <TrackingNoscript gtmId={MAIN_GTM} />
-        <TrackingHead gtmId={MAIN_GTM} />
+        <TrackingNoscript />
+        <TrackingHead />
         {children}
       </body>
     </html>

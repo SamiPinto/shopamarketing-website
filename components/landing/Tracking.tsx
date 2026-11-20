@@ -1,10 +1,11 @@
 import Script from "next/script";
 
+const GTM_ID = "GTM-PNPQ4RJG";
 const PIXEL_ID = "1214724136895084";
 
 // GTM + Meta Pixel for the landing-page layouts, which don't inherit the main site's
 // layout. Never add a Meta Pixel tag inside GTM as well, or events double-count.
-export function TrackingHead({ gtmId }: { gtmId: string }) {
+export function TrackingHead() {
   return (
     <>
       <Script id="gtm" strategy="afterInteractive">
@@ -12,7 +13,7 @@ export function TrackingHead({ gtmId }: { gtmId: string }) {
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
 j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','${gtmId}');`}
+})(window,document,'script','dataLayer','${GTM_ID}');`}
       </Script>
       <Script id="meta-pixel" strategy="afterInteractive">
         {`!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
@@ -26,11 +27,11 @@ fbq('init','${PIXEL_ID}');fbq('track','PageView');`}
   );
 }
 
-export function TrackingNoscript({ gtmId }: { gtmId: string }) {
+export function TrackingNoscript() {
   return (
     <noscript>
       <iframe
-        src={`https://www.googletagmanager.com/ns.html?id=${gtmId}`}
+        src={`https://www.googletagmanager.com/ns.html?id=${GTM_ID}`}
         height="0"
         width="0"
         style={{ display: "none", visibility: "hidden" }}
@@ -40,6 +41,3 @@ export function TrackingNoscript({ gtmId }: { gtmId: string }) {
     </noscript>
   );
 }
-
-export const MAIN_GTM = "GTM-PNPQ4RJG";
-export const SEO_GTM = "GTM-TGGFNNZ4";
