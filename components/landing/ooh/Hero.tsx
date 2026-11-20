@@ -4,7 +4,7 @@ const TICKS = [
   "Limited advertisers at each location",
   "Easy payment options",
   "Unlimited creative updates included",
-  "Include 1 month boost for Christmas",
+  "Include 1 month boost on Facebook and Instagram",
 ];
 
 export function Check() {
